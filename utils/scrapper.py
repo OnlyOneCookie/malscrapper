@@ -259,12 +259,13 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         print('\nSaving current progress before exiting...')
+        print(f'Merging {len(db)} {SELECTED_ENDPOINT}s from {filename_db} with {len(rate_limited_validate_list)} {SELECTED_ENDPOINT}s from {filename_rate_limited_validate_list}')
         merged_list = db + rate_limited_validate_list
         seen_ids = set()
         cleaned_list = [entry for entry in merged_list if entry['id'] not in seen_ids and not seen_ids.add(entry['id'])]
         db = sorted(cleaned_list, key=lambda x: x['id'])
         save_list(db, filename_db)
-        save_list(rate_limited_validate_list, filename_rate_limited_validate_list)
+        save_list([], filename_rate_limited_validate_list)
         print(f'Saved {len(db)} {SELECTED_ENDPOINT}s in {filename_db}')
-        print(f'Saved {len(rate_limited_validate_list)} {SELECTED_ENDPOINT}s in {filename_rate_limited_validate_list}')
+        print(f'Cleaned {filename_rate_limited_validate_list}')
         print('Exiting scrapper...')
