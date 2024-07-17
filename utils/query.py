@@ -3,11 +3,27 @@ import json
 import time
 import re
 import os
+import argparse
+import pathlib
+import psycopg2
 
 from enum import Enum
 
+ENDPOINT_ANIME = 'anime'
+ENDPOINT_MANGA = 'manga'
+SELECTED_ENDPOINT = None
+EXPORT_FOLDER = ''
+
+db_meta = {
+    "host": "localhost",
+    "database": "sololeveling",
+    "user": "solo",
+    "password": "leveling"
+}
+
 class TABLES(Enum):
     ANIME = 'anime'
+    MANGA = 'manga'
     NSFW = 'nsfw'
     MEDIA_TYPE = 'media_type'
     GENRE = 'genre'
@@ -20,17 +36,31 @@ class TABLES(Enum):
 
 tables = TABLES
 
+def send_query(query):
+    db = psycopg2.connect(**db_meta)
+    cur = db.cursor()
+    cur.execute(query)
+    db.close()
+
 def query_generator():
-    data = get_data('db.json')
+    data = get_data(f'db_{SELECTED_ENDPOINT}.json')
     print(f'Generating queries with {len(data)} anime entries...')
     for table in tables:
         print(f'Creating query for {table.value}...')
+
+        if table.value == TABLES.MANGA.value:
+            query = f'''
+CREATE TABLE IF NOT EXISTS {table.value}(
+    id int primary key not null,
+    title json
+'''
+
         
         if table.value == TABLES.ANIME.value:
             query = f'''
 CREATE TABLE IF NOT EXISTS {table.value}(
     id int primary key not null, 
-    title json,
+    title text,
     cover text,
     alternative_titles text[],
     start_date date,
@@ -52,14 +82,14 @@ CREATE TABLE IF NOT EXISTS {table.value}(
             inserts = []
             for anime in data:
                 id = anime['id']
-                title_original = anime.get('title')
-                title_en = anime.get('alternative_titles', {}).get('en', None)
-                title_jp = anime.get('alternative_titles', {}).get('ja', None)
-                title = [{"original": title_original.replace("'", "''")},{'en': title_en.replace("'", "''")},{'jp': title_jp.replace("'", "''")}]
-                title = f'{title}'.replace("'", '"')
+                title_original = f"{anime.get('title')}".replace("'", "''")
+                title_en = f"{anime.get('alternative_titles', '').get('en', None)}".replace('"', "''")
+                title_jp = f"{anime.get('alternative_titles', '').get('ja', None)}".replace('\x90', '')
+                title = [{'original': title_original}, {'en': title_en}, {'jp': title_jp}]
+                title = f'{title}'.replace("'", '"').replace('""', "''")
                 cover = anime.get('main_picture', {}).get('large', None)
                 alternative_titles = {synonym for synonym in anime.get('alternative_titles').get('synonyms', None)}
-                alternative_titles = f'{alternative_titles}'.replace("'", "''").replace('set()', '{}')
+                alternative_titles = f'{alternative_titles}'.replace("'", "''")
                 start_date = anime.get('start_date')
                 end_date = anime.get('end_date')
                 genres = {genre['id'] for genre in anime.get('genres', [])}
@@ -73,12 +103,14 @@ CREATE TABLE IF NOT EXISTS {table.value}(
                 status = anime.get('status')
                 episodes_count = anime.get('num_episodes')
                 season = anime.get('start_season', {}).get('season', None)
-                inserts.append(f'INSERT INTO {table.value} (id, title, cover, alternative_titles, start_date, end_date, genre_ids, nsfw, rating, studio_ids, created_at, updated_at, media_type, status, episodes_count, season) VALUES ({id}, json \'{title}\', \'{cover}\', \'{alternative_titles}\', \'{start_date}\', \'{end_date}\', \'{genres}\', \'{nsfw}\', \'{rating}\', \'{studios}\', \'{created_at}\', \'{updated_at}\', \'{media_type}\', \'{status}\', {episodes_count}, \'{season}\');'.replace("'None'", 'null').replace('None', 'null'))
+                inserts.append(f'INSERT INTO {table.value} (id, title, cover, alternative_titles, start_date, end_date, genre_ids, nsfw, rating, studio_ids, created_at, updated_at, media_type, status, episodes_count, season) VALUES ({id}, \'{title}\', \'{cover}\', \'{alternative_titles}\', \'{start_date}\', \'{end_date}\', \'{genres}\', \'{nsfw}\', \'{rating}\', \'{studios}\', \'{created_at}\', \'{updated_at}\', \'{media_type}\', \'{status}\', {episodes_count}, \'{season}\');'.replace("'None'", 'null').replace('None', 'null').replace('set()', '{}'))
 
             for insert in inserts:
 
                 query += f'\n{insert}'
             
+
+            send_query(query)
             export_query(f'{table.value}.sql', query)
             
         if table.value == TABLES.NSFW.value:
@@ -115,7 +147,7 @@ CREATE TYPE {table.value} AS ENUM(
             query = f'''
 CREATE TYPE {table.value} AS ENUM(
     'not_yet_aired',
-    'airing',
+    'currently_airing',
     'finished_airing'
 );
                 '''
@@ -188,7 +220,7 @@ CREATE TYPE {table.value} AS ENUM(
     'winter',
     'spring',
     'summer',
-    'autumn'
+    'fall'
 );
                 '''
             
@@ -232,15 +264,16 @@ CREATE TYPE {table.value} AS ENUM(
             export_query(f'{table.value}.sql', query)
 
         if table.value == TABLES.STATISTICS.value:
-            mn_query = f'''
-CREATE TABLE IF NOT EXISTS {TABLES.ANIME.value}_{TABLES.STATISTICS.value}(
-    anime_id int references anime (id) on update cascade on delete cascade,
-    statistics_id int references anime (id) on update cascade on delete cascade
-);
-'''
+            
+#             mn_query = f'''
+# CREATE TABLE IF NOT EXISTS {TABLES.STATISTICS.value}(
+#     anime_id int references anime (id) on update cascade on delete cascade,
+#     statistics_id int references anime (id) on update cascade on delete cascade
+# );
+# '''
             query = f'''
-CREATE TABLE IF NOT EXISTS {table.value}(
-    id serial primary key not null,
+CREATE TABLE IF NOT EXISTS {TABLES.ANIME.value}_{TABLES.STATISTICS.value}(
+    anime_id serial primary key not null,
     watching int,
     completed int,
     on_hold int,
@@ -267,18 +300,20 @@ CREATE TABLE IF NOT EXISTS {table.value}(
                 completed = anime.get('statistics', None).get('status').get('completed')
                 on_hold = anime.get('statistics', None).get('status').get('on_hold')
                 plan_to_watch = anime.get('statistics', None).get('status').get('plan_to_watch')
-                inserts.append(f'INSERT INTO {table.value} (anime_id, mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, plan_to_watch) VALUES({id}, {mean}, {rank}, {popularity}, {users_listed}, {users_scored}, {watching}, {completed}, {on_hold}, {plan_to_watch})'.replace("'None'", 'null').replace('None', 'null'))
-                mn_inserts.append(f'INSERT INTO {TABLES.ANIME.value}_{TABLES.STATISTICS.value} (anime_id, statistics_id) VALUES ({anime_id}, {data_count})')
+                inserts.append(f'INSERT INTO {TABLES.ANIME.value}_{TABLES.STATISTICS.value} (anime_id, mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, plan_to_watch) VALUES({id}, {mean}, {rank}, {popularity}, {users_listed}, {users_scored}, {watching}, {completed}, {on_hold}, {plan_to_watch});'.replace("'None'", 'null').replace('None', 'null'))
+#                 mn_inserts.append(f'INSERT INTO {TABLES.ANIME.value}_{TABLES.STATISTICS.value} (anime_id, statistics_id) VALUES ({anime_id}, {data_count});')
                 data_count += 1
 
             for insert in inserts:
                 query += f'\n{insert}'
             
-            for insert in mn_inserts:
-                mn_query += f'\n{insert}'
+#             for insert in mn_inserts:
+#                 mn_query += f'\n{insert}'
 
-            export_query(f'{table.value}.sql', query)
-            export_query(f'{TABLES.ANIME.value}_{TABLES.STATISTICS.value}.sql', mn_query)
+            export_query(f'{TABLES.ANIME.value}_{TABLES.STATISTICS.value}.sql', query)
+#             export_query(f'{TABLES.ANIME.value}_{TABLES.STATISTICS.value}.sql', mn_query)
+
+
 
 
 def get_data(file_path):
@@ -297,7 +332,7 @@ def get_data(file_path):
         return None
     
 def export_query(filename, query):
-    with open(f'../queries/{filename}', 'w+') as file:
+    with open(f'{EXPORT_FOLDER}/{filename}', 'w+') as file:
         file.write(query)
 
 def query_merger():
@@ -317,12 +352,13 @@ def query_merger():
     ] 
 
     # Name of the output file
-    output_file = '../queries/_merged.sql'
-
+    
+    output_file = f'{EXPORT_FOLDER}/_merged.sql'
+    
     # Open the output file in write mode
     with open(output_file, 'w') as outfile:
         for sql_file in sql_files:
-            filepath = f'../queries/{sql_file}'
+            filepath = f'{EXPORT_FOLDER}/{sql_file}'
             # Check if the file exists
             if os.path.exists(filepath):
                 # Open each SQL file in read mode
@@ -340,5 +376,22 @@ def query_merger():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        '-e',
+        '--endpoint',
+        choices=['anime', 'manga'],
+        default=ENDPOINT_ANIME,
+        help='Choose between the anime or manga endpoint'
+    )
+
+    args = parser.parse_args()
+
+    SELECTED_ENDPOINT = args.endpoint 
+    EXPORT_FOLDER = f'../queries/{SELECTED_ENDPOINT}'
+
+    os.makedirs(EXPORT_FOLDER, exist_ok=True)
+
     query_generator()
     query_merger()

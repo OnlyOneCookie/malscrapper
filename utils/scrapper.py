@@ -21,20 +21,20 @@ REQUEST_START_N = None
 REQUEST_LIMIT_N = 70000
 SAVE_PROGRESS_N = 1
 
-def get_data(client_id, endpoint, id):
-    if endpoint == ENDPOINT_ANIME:
+def get_data(id):
+    if SELECTED_ENDPOINT == ENDPOINT_ANIME:
         params = {
             'fields': 'id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics'
         }
         api_url = API_ENDPOINT_ANIME
-    elif endpoint == ENDPOINT_MANGA:
+    elif SELECTED_ENDPOINT == ENDPOINT_MANGA:
         params = {
             'fields': 'id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors{first_name,last_name},pictures,background,related_anime,related_manga,recommendations,serialization{name}'
         }
         api_url = API_ENDPOINT_MANGA
 
     headers = {
-        'X-MAL-CLIENT-ID': client_id
+        'X-MAL-CLIENT-ID': CLIENT_ID
     }
 
     response = requests.get(f"{api_url}/{id}", params=params, headers=headers)
@@ -42,17 +42,17 @@ def get_data(client_id, endpoint, id):
     if response.status_code == 200:
         return response.json()
     elif response.status_code == 404:
-        print(f"No {endpoint} found with id {id}")
-        if endpoint == ENDPOINT_ANIME:
+        print(f"No {SELECTED_ENDPOINT} found with id {id}")
+        if SELECTED_ENDPOINT == ENDPOINT_ANIME:
             entries = load_list(NOT_FOUND_LIST_ANIME)
             entries.append(id)
             save_list(entries, NOT_FOUND_LIST_ANIME)
-        elif endpoint == ENDPOINT_MANGA:
+        elif SELECTED_ENDPOINT == ENDPOINT_MANGA:
             entries = load_list(NOT_FOUND_LIST_MANGA)
             entries.append(id)
             save_list(entries, NOT_FOUND_LIST_MANGA)
     else:
-        print(f"Error {response.status_code}: Rate limited for {endpoint} id {id}")
+        print(f"Error {response.status_code}: Rate limited for {SELECTED_ENDPOINT} id {id}")
     
     return None
 
@@ -165,7 +165,7 @@ if __name__ == "__main__":
                     unused_ids.append(i)
             
             for id in unused_ids:
-                entry = get_data(CLIENT_ID, SELECTED_ENDPOINT, id)
+                entry = get_data(id)
                 if entry:
                     if len(db) == 0:
                         db = []
@@ -206,7 +206,7 @@ if __name__ == "__main__":
 
             print('Trying to scrap the possible unused ids...')
             for i in unused_ids:
-                entry = get_data(CLIENT_ID, SELECTED_ENDPOINT, i)
+                entry = get_data(i)
                 if entry:
                     if len(rate_limited_validate_list) == 0:
                         rate_limited_validate_list = []
@@ -238,6 +238,7 @@ if __name__ == "__main__":
             save_list(db, filename_db)
             save_list([], filename_rate_limited_validate_list)
             print(f'Sorted and cleaned {len(db)} {SELECTED_ENDPOINT}s...')
+        # Experimental 
         elif args.mode == 'seasonal':
             params = {
                     'limit': 100
