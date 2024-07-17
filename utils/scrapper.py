@@ -19,7 +19,7 @@ DB_LIST_ANIME = 'db_anime.json'
 DB_LIST_MANGA = 'db_manga.json'
 REQUEST_START_N = None
 REQUEST_LIMIT_N = 70000
-SAVE_PROGRESS_N = 5
+SAVE_PROGRESS_N = 1
 
 def get_data(client_id, endpoint, id):
     if endpoint == ENDPOINT_ANIME:
@@ -116,7 +116,7 @@ if __name__ == "__main__":
         args = parser.parse_args()
         SELECTED_ENDPOINT = args.endpoint
         REQUEST_START_N = args.start
-        REQUEST_LIMIT_N = args.limit
+        REQUEST_LIMIT_N = args.limit + 1
         CLIENT_ID = args.key
 
         if args.mode != 'cleaner' and CLIENT_ID is None:
@@ -130,6 +130,7 @@ if __name__ == "__main__":
             rate_limited_validate_list = load_list(RATE_LIMITED_VALIDATE_LIST_ANIME)
             filename_rate_limited_validate_list = RATE_LIMITED_VALIDATE_LIST_ANIME
             filename_db = DB_LIST_ANIME
+            filename_not_found = NOT_FOUND_LIST_ANIME
         elif SELECTED_ENDPOINT == ENDPOINT_MANGA:
             api_endpoint_url = API_ENDPOINT_MANGA
             db = load_list(DB_LIST_MANGA)
@@ -137,6 +138,7 @@ if __name__ == "__main__":
             rate_limited_validate_list = load_list(RATE_LIMITED_VALIDATE_LIST_MANGA)
             filename_rate_limited_validate_list = RATE_LIMITED_VALIDATE_LIST_MANGA
             filename_db = DB_LIST_MANGA
+            filename_not_found = NOT_FOUND_LIST_MANGA
         
         time_start = time.time()
         new_entry_count = 0
@@ -146,11 +148,23 @@ if __name__ == "__main__":
                 REQUEST_START_N = get_last_id(db) + 1
             if REQUEST_LIMIT_N < REQUEST_START_N:
                 print('Request limit is smaller than the start...')
+                exit(1)
             
             print(f"Loaded {len(db)} existing {SELECTED_ENDPOINT} entries")
             print(f"Starting from ID: {REQUEST_START_N}")
+
+            used_ids = []
+            unused_ids = []
+            print(f'Getting ids which appear in {filename_db}')
+            for i in db:
+                used_ids.append(i.get('id'))
+
+            print(f'Getting free ids which not appear in {filename_db}')
+            for i in range(REQUEST_START_N, REQUEST_LIMIT_N):
+                if i not in used_ids and i not in not_found_list:
+                    unused_ids.append(i)
             
-            for id in range(REQUEST_START_N, REQUEST_LIMIT_N + 1):
+            for id in unused_ids:
                 entry = get_data(CLIENT_ID, SELECTED_ENDPOINT, id)
                 if entry:
                     if len(db) == 0:
@@ -173,7 +187,8 @@ if __name__ == "__main__":
                     time.sleep(1)  
 
             save_list(db, filename_db)
-            print(f"Added {new_entry_count} new {SELECTED_ENDPOINT} entries.\nTotal {SELECTED_ENDPOINT}s in {filename_db}: {len(db)}")
+            print(f"== Request limit reached ==\nAdded {new_entry_count} new {SELECTED_ENDPOINT} entries to {filename_db}\nTotal {SELECTED_ENDPOINT}s in {filename_db}: {len(db)}")
+            raise KeyboardInterrupt
         elif args.mode == 'validate':
             used_ids = []
             unused_ids = []
@@ -213,7 +228,8 @@ if __name__ == "__main__":
                     time.sleep(1)  
             
             save_list(rate_limited_validate_list, filename_rate_limited_validate_list)
-            print(f"Added {new_entry_count} new {SELECTED_ENDPOINT} entries.\nTotal {SELECTED_ENDPOINT}s in {filename_db}: {len(rate_limited_validate_list)}")
+            print(f"== Request limit reached ==\nAdded {new_entry_count} new {SELECTED_ENDPOINT} entries to {filename_rate_limited_validate_list}\nTotal {SELECTED_ENDPOINT}s in {filename_rate_limited_validate_list}: {len(rate_limited_validate_list)}")
+            raise KeyboardInterrupt
         elif args.mode == 'cleaner':
             merged_list = db + rate_limited_validate_list
             seen_ids = set()
