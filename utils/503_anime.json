@@ -588,5 +588,689 @@
             },
             "num_list_users": 63
         }
+    },
+    {
+        "id": 46796,
+        "title": "Man Jie Guoxue Xilie: Chengyu Gushi",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1044/130822.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1044/130822l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "漫解国学系列-成语故事"
+        },
+        "synopsis": "",
+        "rank": 16432,
+        "popularity": 26547,
+        "num_list_users": 59,
+        "num_scoring_users": 13,
+        "nsfw": "white",
+        "created_at": "2021-01-25T14:51:50+00:00",
+        "updated_at": "2022-11-08T20:56:17+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 85,
+        "source": "other",
+        "average_episode_duration": 680,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1044/130822.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1044/130822l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "2",
+                "completed": "23",
+                "on_hold": "1",
+                "dropped": "21",
+                "plan_to_watch": "12"
+            },
+            "num_list_users": 59
+        }
+    },
+    {
+        "id": 46945,
+        "title": "Kuaile Xiong Doudou: Hanzi Baobao",
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "快乐熊兜兜之汉字宝宝"
+        },
+        "start_date": "2015",
+        "synopsis": "",
+        "rank": 16069,
+        "popularity": 26535,
+        "num_list_users": 59,
+        "num_scoring_users": 11,
+        "nsfw": "white",
+        "created_at": "2021-01-27T05:53:20+00:00",
+        "updated_at": "2022-10-17T18:53:50+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 10,
+                "name": "Fantasy"
+            },
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 26,
+        "source": "original",
+        "average_episode_duration": 920,
+        "rating": "pg",
+        "pictures": [],
+        "background": "",
+        "related_anime": [
+            {
+                "node": {
+                    "id": 46947,
+                    "title": "Kuaile Xiong Doudou: Wenzi de Liliang",
+                    "main_picture": {
+                        "medium": "https://cdn.myanimelist.net/images/anime/1985/129412.jpg",
+                        "large": "https://cdn.myanimelist.net/images/anime/1985/129412l.jpg"
+                    }
+                },
+                "relation_type": "prequel",
+                "relation_type_formatted": "Prequel"
+            }
+        ],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "2",
+                "completed": "20",
+                "on_hold": "1",
+                "dropped": "22",
+                "plan_to_watch": "14"
+            },
+            "num_list_users": 59
+        }
+    },
+    {
+        "id": 47092,
+        "title": "Tutu Zhi Shenqi Mogu",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1048/130791.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1048/130791l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "兔兔之神奇蘑菇"
+        },
+        "start_date": "2017",
+        "synopsis": "",
+        "rank": 14265,
+        "popularity": 26505,
+        "num_list_users": 59,
+        "num_scoring_users": 11,
+        "nsfw": "white",
+        "created_at": "2021-01-30T15:55:52+00:00",
+        "updated_at": "2022-11-08T15:58:25+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 52,
+        "source": "original",
+        "average_episode_duration": 740,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1048/130791.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1048/130791l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "3",
+                "completed": "22",
+                "on_hold": "3",
+                "dropped": "20",
+                "plan_to_watch": "11"
+            },
+            "num_list_users": 59
+        }
+    },
+    {
+        "id": 47093,
+        "title": "Menghuan Zhuangyuan",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1969/130789.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1969/130789l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "梦幻庄园"
+        },
+        "synopsis": "",
+        "rank": 16607,
+        "popularity": 26549,
+        "num_list_users": 59,
+        "num_scoring_users": 12,
+        "nsfw": "white",
+        "created_at": "2021-01-30T15:57:11+00:00",
+        "updated_at": "2022-11-08T15:52:59+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 50,
+        "source": "original",
+        "average_episode_duration": 600,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1969/130789.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1969/130789l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "2",
+                "completed": "22",
+                "on_hold": "1",
+                "dropped": "20",
+                "plan_to_watch": "14"
+            },
+            "num_list_users": 59
+        }
+    },
+    {
+        "id": 47245,
+        "title": "Bao Ji Qiangshou",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1336/129245.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1336/129245l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [
+                "Boomguy"
+            ],
+            "en": "",
+            "ja": "暴基枪手"
+        },
+        "start_date": "2016-03-04",
+        "end_date": "2016-08-24",
+        "synopsis": "",
+        "rank": 18613,
+        "popularity": 23287,
+        "num_list_users": 97,
+        "num_scoring_users": 22,
+        "nsfw": "white",
+        "created_at": "2021-02-01T13:23:56+00:00",
+        "updated_at": "2022-10-15T17:06:45+00:00",
+        "media_type": "ona",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 4,
+                "name": "Comedy"
+            },
+            {
+                "id": 20,
+                "name": "Parody"
+            }
+        ],
+        "num_episodes": 13,
+        "start_season": {
+            "year": 2016,
+            "season": "winter"
+        },
+        "source": "game",
+        "average_episode_duration": 587,
+        "rating": "pg_13",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1336/129245.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1336/129245l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [
+            {
+                "node": {
+                    "id": 47246,
+                    "title": "Bao Ji Qiangshou: AK Xiyou",
+                    "main_picture": {
+                        "medium": "https://cdn.myanimelist.net/images/anime/1021/129246.jpg",
+                        "large": "https://cdn.myanimelist.net/images/anime/1021/129246l.jpg"
+                    }
+                },
+                "relation_type": "sequel",
+                "relation_type_formatted": "Sequel"
+            },
+            {
+                "node": {
+                    "id": 47247,
+                    "title": "Bao Ji Qiangshou: T de Richang",
+                    "main_picture": {
+                        "medium": "https://cdn.myanimelist.net/images/anime/1873/129247.jpg",
+                        "large": "https://cdn.myanimelist.net/images/anime/1873/129247l.jpg"
+                    }
+                },
+                "relation_type": "side_story",
+                "relation_type_formatted": "Side story"
+            }
+        ],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "3",
+                "completed": "38",
+                "on_hold": "2",
+                "dropped": "26",
+                "plan_to_watch": "28"
+            },
+            "num_list_users": 97
+        }
+    },
+    {
+        "id": 47272,
+        "title": "Qiao Shou Luban",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1946/129803.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1946/129803l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "巧手鲁班"
+        },
+        "start_date": "2016-03-17",
+        "synopsis": "",
+        "rank": 17644,
+        "popularity": 26557,
+        "num_list_users": 59,
+        "num_scoring_users": 11,
+        "nsfw": "white",
+        "created_at": "2021-02-02T15:49:50+00:00",
+        "updated_at": "2022-10-25T19:07:01+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 208,
+        "source": "original",
+        "average_episode_duration": 436,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1946/129803.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1946/129803l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "2",
+                "completed": "21",
+                "on_hold": 0,
+                "dropped": "22",
+                "plan_to_watch": "14"
+            },
+            "num_list_users": 59
+        }
+    },
+    {
+        "id": 47557,
+        "title": "Xiao Gou Pipi",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1529/123229.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1529/123229l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "小狗皮皮"
+        },
+        "start_date": "2017",
+        "synopsis": "",
+        "rank": 14684,
+        "popularity": 25539,
+        "num_list_users": 67,
+        "num_scoring_users": 12,
+        "nsfw": "white",
+        "created_at": "2021-02-10T17:27:17+00:00",
+        "updated_at": "2022-04-22T13:47:59+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 65,
+        "source": "original",
+        "average_episode_duration": 500,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1529/123229.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1529/123229l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "3",
+                "completed": "23",
+                "on_hold": 0,
+                "dropped": "21",
+                "plan_to_watch": "20"
+            },
+            "num_list_users": 67
+        }
+    },
+    {
+        "id": 47694,
+        "title": "Ku Jie de Kexue Zhi Lu: Konglong Da Zuozhan",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1311/130681.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1311/130681l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "酷杰的科学之旅-恐龙大作战"
+        },
+        "start_date": "2019",
+        "synopsis": "",
+        "rank": 16012,
+        "popularity": 26025,
+        "num_list_users": 63,
+        "num_scoring_users": 13,
+        "nsfw": "white",
+        "created_at": "2021-02-13T15:38:21+00:00",
+        "updated_at": "2022-11-06T18:08:21+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 15,
+        "source": "original",
+        "average_episode_duration": 375,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1311/130681.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1311/130681l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "2",
+                "completed": "27",
+                "on_hold": "1",
+                "dropped": "22",
+                "plan_to_watch": "11"
+            },
+            "num_list_users": 63
+        }
+    },
+    {
+        "id": 47828,
+        "title": "Qi Qu Tegong Dui",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1206/129315.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1206/129315l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "奇趣特工队"
+        },
+        "start_date": "2019-11-11",
+        "synopsis": "",
+        "rank": 17614,
+        "popularity": 25837,
+        "num_list_users": 65,
+        "num_scoring_users": 11,
+        "nsfw": "white",
+        "created_at": "2021-02-17T06:10:47+00:00",
+        "updated_at": "2022-10-16T17:48:16+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 26,
+        "source": "original",
+        "average_episode_duration": 380,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1206/129315.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1206/129315l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [
+            {
+                "node": {
+                    "id": 47829,
+                    "title": "Qi Qu Tegong Dui 2nd Season",
+                    "main_picture": {
+                        "medium": "https://cdn.myanimelist.net/images/anime/1661/129316.jpg",
+                        "large": "https://cdn.myanimelist.net/images/anime/1661/129316l.jpg"
+                    }
+                },
+                "relation_type": "sequel",
+                "relation_type_formatted": "Sequel"
+            }
+        ],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "2",
+                "completed": "23",
+                "on_hold": "1",
+                "dropped": "26",
+                "plan_to_watch": "13"
+            },
+            "num_list_users": 65
+        }
+    },
+    {
+        "id": 47959,
+        "title": "Duo Le Yijia",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1222/118228.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1222/118228l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [],
+            "en": "",
+            "ja": "多乐一家"
+        },
+        "start_date": "2018",
+        "end_date": "2018",
+        "synopsis": "",
+        "rank": 19589,
+        "popularity": 24542,
+        "num_list_users": 79,
+        "num_scoring_users": 10,
+        "nsfw": "white",
+        "created_at": "2021-02-19T03:08:59+00:00",
+        "updated_at": "2021-09-30T07:31:38+00:00",
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 15,
+                "name": "Kids"
+            }
+        ],
+        "num_episodes": 8,
+        "source": "original",
+        "average_episode_duration": 320,
+        "rating": "pg",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1222/118228.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1222/118228l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "4",
+                "completed": "24",
+                "on_hold": 0,
+                "dropped": "25",
+                "plan_to_watch": "26"
+            },
+            "num_list_users": 79
+        }
+    },
+    {
+        "id": 48310,
+        "title": "Dino King 3D: Journey to Fire Mountain",
+        "main_picture": {
+            "medium": "https://cdn.myanimelist.net/images/anime/1625/112559.jpg",
+            "large": "https://cdn.myanimelist.net/images/anime/1625/112559l.jpg"
+        },
+        "alternative_titles": {
+            "synonyms": [
+                "Speckles the Tarbosaurus 2: The New Paradise",
+                "Konglong Wang",
+                "Dino King",
+                "恐龙王"
+            ],
+            "en": "Dino King: Journey to Fire Mountain",
+            "ja": "점박이 한반도의 공룡 2: 새로운 낙원"
+        },
+        "start_date": "2018-12-25",
+        "end_date": "2018-12-25",
+        "synopsis": "An action-packed family adventure that combines the realism of Walking With Dinosaurs with the heart of Finding Nemo.\nSpeckles, a ferocious tarbosaurus and his young son junior, mourning the loss of their family in an epic battle, roam the lands in search of food, adventure and peace. Under the watchful eye of his dad, Junior is growing up healthy and strong, but with an overconfidence thanks to his young age.\n\nAfter one encounter results in Junior being kidnapped, Speckles embarks on an adventure to the ends of earth to find his son. Encountering friend and foe, ally and enemy, Speckles will stop at nothing and will take on all corners to save his offspring.\n\n(Source: Amazon)",
+        "rank": 19403,
+        "popularity": 21050,
+        "num_list_users": 176,
+        "num_scoring_users": 38,
+        "nsfw": "white",
+        "created_at": "2021-02-22T18:13:30+00:00",
+        "updated_at": "2023-09-17T07:33:51+00:00",
+        "media_type": "movie",
+        "status": "finished_airing",
+        "genres": [
+            {
+                "id": 2,
+                "name": "Adventure"
+            }
+        ],
+        "num_episodes": 1,
+        "start_season": {
+            "year": 2018,
+            "season": "fall"
+        },
+        "source": "original",
+        "average_episode_duration": 5646,
+        "rating": "g",
+        "pictures": [
+            {
+                "medium": "https://cdn.myanimelist.net/images/anime/1625/112559.jpg",
+                "large": "https://cdn.myanimelist.net/images/anime/1625/112559l.jpg"
+            }
+        ],
+        "background": "",
+        "related_anime": [
+            {
+                "node": {
+                    "id": 35674,
+                    "title": "Jumbagi: Hanbandoui gongryong 3D",
+                    "main_picture": {
+                        "medium": "https://cdn.myanimelist.net/images/anime/9/86041.jpg",
+                        "large": "https://cdn.myanimelist.net/images/anime/9/86041l.jpg"
+                    }
+                },
+                "relation_type": "prequel",
+                "relation_type_formatted": "Prequel"
+            }
+        ],
+        "related_manga": [],
+        "recommendations": [],
+        "studios": [],
+        "statistics": {
+            "status": {
+                "watching": "10",
+                "completed": "62",
+                "on_hold": "4",
+                "dropped": "36",
+                "plan_to_watch": "64"
+            },
+            "num_list_users": 176
+        }
     }
 ]

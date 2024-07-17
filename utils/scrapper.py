@@ -72,15 +72,17 @@ def get_last_id(entries):
 if __name__ == "__main__":
     try:
         parser = argparse.ArgumentParser()
-
+        
         parser.add_argument(
+            '-e',
             '--endpoint', 
             choices=['anime', 'manga'], 
             default=ENDPOINT_ANIME, 
             help='Choose between the anime or manga endpoint.'
         )
-        
+
         parser.add_argument(
+            '-m',
             '--mode', 
             choices=['scrap', 'validate', 'cleaner', 'seasonal'], 
             required=True, 
@@ -88,23 +90,27 @@ if __name__ == "__main__":
         )
 
         parser.add_argument(
+            '-s',
             '--start',
             type=int,
             default=REQUEST_START_N,
-            help=f'Total number of animes to scrap/validate. Default is {REQUEST_START_N}'
+            help=f'Total number of entries to scrap/validate. Default is {REQUEST_START_N}'
         )
 
         parser.add_argument(
+            '-l',
             '--limit',
             type=int,
             default=REQUEST_LIMIT_N,
-            help=f'Total number of animes to scrap/validate. Default is {REQUEST_LIMIT_N}'
+            help=f'Upper limit of entries to scrap/validate. Default is {REQUEST_LIMIT_N}'
         )
 
         parser.add_argument(
+            '-k',
             '--key',
             type=str,
-            default=CLIENT_ID
+            default=CLIENT_ID,
+            help='API key which is needed within the {scrap,validate,seasonal} mode.'
         )
 
         args = parser.parse_args()
