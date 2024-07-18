@@ -124,7 +124,5 @@ if __name__ == '__main__':
                 filename_db = DB_LIST_MANGA
                 filename_not_found = NOT_FOUND_LIST_MANGA
                 filename_rate_limited_validate_list = RATE_LIMITED_VALIDATE_LIST_MANGA
-                
-        
     except KeyboardInterrupt:
         pass
