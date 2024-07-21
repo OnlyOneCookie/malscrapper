@@ -27,7 +27,6 @@ DB_CONFIG = {
 }
 
 class ENTITY(Enum):
-    ENDPOINT = 'endpoint'
     GENRE = 'genre'
     MEDIA_TYPE = 'media_type'
     NSFW = 'nsfw'
@@ -37,9 +36,9 @@ class ENTITY(Enum):
     SEASON = 'season'
     STUDIO = 'studio'
     AUTHOR = 'author'
-    STATISTICS = 'statistics'
     ANIME = 'anime'
     MANGA = 'manga'
+    STATISTICS = 'statistics'
 
     def __repr__(self):
         return self.value
@@ -70,34 +69,28 @@ def generator():
     for entity in entities:
         print(f'Generating query for {entity}...')
 
-        if entity == ENTITY.ENDPOINT:
-            pass
-        elif entity == ENTITY.GENRE:
+        if entity == ENTITY.GENRE:
             genres = []
-            for i in animes:
-                j = i.get('genres', [])
-                for genre in j:
-                    genre['endpoint'] = 'anime' 
-                    genres.append(genre)
             
-            for i in mangas:
+            for i in animes + mangas:
                 j = i.get('genres', [])
                 for genre in j:
-                    genre['endpoint'] = 'manga' 
-                    genres.append(genre)
+                    genres.append(genre['name'])
+            
+            genres = list(set(genres))
+            
+            entries = []
+            for i in genres:
+                entries.append({'id': len(entries) + 1, 'name': i})
 
-            # Remove duplicates and sort list
-            seen = set()
-            entries = sorted([x for x in genres if not (tuple(x.items()) in seen or seen.add(tuple(x.items())))], key=lambda x: x['id'])
-            query = f'INSERT INTO {entity}(id, name, endpoint) VALUES(%s, %s, %s);'
+            query = f'INSERT INTO {entity}(id, name) VALUES(%s, %s);'
             for entry in entries:
                 with psycopg2.connect(**DB_CONFIG) as db:
                     db.autocommit = True
                     with db.cursor() as cursor:
                         id = entry.get('id')
                         name = entry.get('name')
-                        endpoint = entry.get('endpoint')
-                        cursor.execute(query, (id, name, endpoint,))
+                        cursor.execute(query, (id, name,))
         elif entity == ENTITY.MEDIA_TYPE:
             media_types = []
             for i in animes + mangas:
@@ -198,39 +191,11 @@ CREATE TYPE {entity} AS ENUM(
                         cursor.execute(query, (id, name,))
         elif entity == ENTITY.AUTHOR:
             pass
-        elif entity == ENTITY.STATISTICS:
-            query = f'INSERT INTO {entity}(id, endpoint, mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, plan_to_watch) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
+        elif entity == ENTITY.ANIME:
             with psycopg2.connect(**DB_CONFIG) as db:
                 db.autocommit = True
                 with db.cursor() as cursor:
-                    for entry in animes:
-                        id = entry.get('id')
-                        endpoint = 'anime'
-                        mean = entry.get('mean')
-                        rank = entry.get('rank')
-                        popularity = entry.get('popularity')
-                        users_listed = entry.get('num_list_users')
-                        users_scored = entry.get('num_scoring_users')
-                        watching = entry.get('statistics', None).get('status').get('watching')
-                        completed = entry.get('statistics', None).get('status').get('completed')
-                        on_hold = entry.get('statistics', None).get('status').get('on_hold')
-                        plan_to_watch = entry.get('statistics', None).get('status').get('plan_to_watch')
-                        cursor.execute(query, (id, endpoint, mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, plan_to_watch,))
-                    for entry in mangas:
-                        id = entry.get('id')
-                        endpoint = 'manga'
-                        mean = entry.get('mean')
-                        rank = entry.get('rank')
-                        popularity = entry.get('popularity')
-                        users_listed = entry.get('num_list_users')
-                        users_scored = entry.get('num_scoring_users')
-                        watching = None
-                        completed = None
-                        on_hold = None
-                        plan_to_watch = None
-                        cursor.execute(query, (id, endpoint, mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, plan_to_watch,))
-        elif entity == ENTITY.ANIME:
-            query = f'''
+                    query = f'''
 CREATE TABLE IF NOT EXISTS {entity}(
     id int primary key not null, 
     title json,
@@ -238,27 +203,40 @@ CREATE TABLE IF NOT EXISTS {entity}(
     alternative_titles text[],
     start_date date,
     end_date date,
-    genre_ids int[],
     synopsis text,
     nsfw nsfw,
     created_at timestamptz,
     updated_at timestamptz,
     media_type media_type,
     rating rating,
-    studio_ids int[],
     related_anime json,
     related_manga json,
     status status,
     episodes int,
     season season
 );'''
+                    cursor.execute(query) # anime table
 
-            with psycopg2.connect(**DB_CONFIG) as db:
-                db.autocommit = True
-                with db.cursor() as cursor:
-                    cursor.execute(query)
+                    query = f'''
+CREATE TABLE IF NOT EXISTS {entity}_{ENTITY.GENRE} (
+    {entity}_id int not null,
+    {ENTITY.GENRE}_id int not null,
+    primary key ({entity}_id, {ENTITY.GENRE}_id),
+    foreign key ({entity}_id) references {entity}(id) on delete cascade,
+    foreign key ({ENTITY.GENRE}_id) references {ENTITY.GENRE}(id) on delete cascade
+);'''
+                    cursor.execute(query) # anime_genre table
 
-            query = f'INSERT INTO {entity} (id, title, cover, alternative_titles, start_date, end_date, genre_ids, synopsis, nsfw, rating, studio_ids, related_anime, related_manga, created_at, updated_at, media_type, status, episodes, season) VALUES(%s, json %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, json %s, json %s, %s, %s, %s, %s, %s, %s);'
+                    query = f'''
+CREATE TABLE IF NOT EXISTS {entity}_{ENTITY.STUDIO} (
+    {entity}_id int not null,
+    {ENTITY.STUDIO}_id int not null,
+    primary key ({entity}_id, {ENTITY.STUDIO}_id),
+    foreign key ({entity}_id) references {entity}(id) on delete cascade,
+    foreign key ({ENTITY.STUDIO}_id) references {ENTITY.STUDIO}(id) on delete cascade
+);'''
+                    cursor.execute(query) # anime_studio table
+
             with psycopg2.connect(**DB_CONFIG) as db:
                 db.autocommit = True
                 with db.cursor() as cursor:
@@ -283,22 +261,42 @@ CREATE TABLE IF NOT EXISTS {entity}(
                                 bool(datetime.strptime(end_date, "%Y-%m-%d"))
                             except ValueError:
                                 end_date = dateutil.parser.parse(end_date, dayfirst=True)
-                        genres = [genre['id'] for genre in i.get('genres', [])]
+                        
                         synopsis = i.get('synopsis')
                         nsfw = i.get('nsfw')
                         created_at = i.get('created_at')
                         updated_at = i.get('updated_at')
                         media_type = i.get('media_type')
                         rating = i.get('rating')
-                        studios = [studio['id'] for studio in i.get('studios', [])]
                         related_anime = json.dumps(None)
                         related_manga = json.dumps(None)
                         status = i.get('status')
                         episodes = i.get('num_episodes')
                         season = i.get('start_season', {}).get('season', None)
-                        cursor.execute(query, (id, title, cover, alternative_titles, start_date, end_date, genres, synopsis, nsfw, rating, studios, related_anime, related_manga, created_at, updated_at, media_type, status, episodes, season,))
+                        query = f'INSERT INTO {entity} (id, title, cover, alternative_titles, start_date, end_date, synopsis, nsfw, rating, related_anime, related_manga, created_at, updated_at, media_type, status, episodes, season) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
+                        cursor.execute(query, (id, title, cover, alternative_titles, start_date, end_date, synopsis, nsfw, rating, related_anime, related_manga, created_at, updated_at, media_type, status, episodes, season,))
+
+                        # add genres to junction table
+                        genres = [genre['name'] for genre in i.get('genres', [])]
+                        for genre in genres:
+                            query = f'SELECT id FROM {ENTITY.GENRE} WHERE name = %s'
+                            cursor.execute(query, (genre,))
+                            genre_id = cursor.fetchone()
+
+                            if genre_id is not None:
+                                query = f'INSERT INTO {entity}_{ENTITY.GENRE} ({entity}_id, {ENTITY.GENRE}_id) VALUES(%s, %s);'
+                                cursor.execute(query, (id, genre_id,))
+
+                        # add studios to junction table
+                        studios = [studio['id'] for studio in i.get('studios', [])]
+                        for studio in studios:
+                            query = f'INSERT INTO {entity}_{ENTITY.STUDIO} ({entity}_id, {ENTITY.STUDIO}_id) VALUES(%s, %s);'
+                            cursor.execute(query, (id, studio,))
         elif entity == ENTITY.MANGA:
-            query = f'''
+            with psycopg2.connect(**DB_CONFIG) as db:
+                db.autocommit = True
+                with db.cursor() as cursor:
+                    query = f'''
 CREATE TABLE IF NOT EXISTS {entity}(
     id int primary key not null, 
     title json,
@@ -306,7 +304,6 @@ CREATE TABLE IF NOT EXISTS {entity}(
     alternative_titles text[],
     start_date date,
     end_date date,
-    genre_ids int[],
     synopsis text,
     nsfw nsfw,
     created_at timestamptz,
@@ -320,12 +317,18 @@ CREATE TABLE IF NOT EXISTS {entity}(
     chapters int,
     season season
 );'''
+                    cursor.execute(query) # manga table
 
-            with psycopg2.connect(**DB_CONFIG) as db:
-                db.autocommit = True
-                with db.cursor() as cursor:
-                    cursor.execute(query)
-            query = f'INSERT INTO {entity} (id, title, cover, alternative_titles, start_date, end_date, genre_ids, synopsis, nsfw, authors, created_at, updated_at, media_type, status, related_anime, related_manga, volumes, chapters, season) VALUES(%s, json %s, %s, %s, %s, %s, %s, %s, %s, json %s, %s, %s, %s, %s, json %s, json %s, %s, %s, %s);'
+                    query = f'''
+CREATE TABLE IF NOT EXISTS {entity}_{ENTITY.GENRE} (
+    {entity}_id int not null,
+    {ENTITY.GENRE}_id int not null,
+    primary key ({entity}_id, {ENTITY.GENRE}_id),
+    foreign key ({entity}_id) references {entity}(id) on delete cascade,
+    foreign key ({ENTITY.GENRE}_id) references {ENTITY.GENRE}(id) on delete cascade
+);'''
+                    cursor.execute(query) # manga_genre table
+
             with psycopg2.connect(**DB_CONFIG) as db:
                 db.autocommit = True
                 with db.cursor() as cursor:
@@ -350,7 +353,6 @@ CREATE TABLE IF NOT EXISTS {entity}(
                                 bool(datetime.strptime(end_date, "%Y-%m-%d"))
                             except ValueError:
                                 end_date = dateutil.parser.parse(end_date, dayfirst=True)
-                        genres = [genre['id'] for genre in i.get('genres', [])]
                         synopsis = i.get('synopsis')
                         nsfw = i.get('nsfw')
                         created_at = i.get('created_at')
@@ -363,7 +365,79 @@ CREATE TABLE IF NOT EXISTS {entity}(
                         volumes = i.get('num_volumes')
                         chapters = i.get('num_chapters')
                         season = i.get('start_season', {}).get('season', None)
-                        cursor.execute(query, (id, title, cover, alternative_titles, start_date, end_date, genres, synopsis, nsfw, authors, created_at, updated_at, media_type, status, related_anime, related_manga, volumes, chapters, season,))
+                        query = f'INSERT INTO {entity} (id, title, cover, alternative_titles, start_date, end_date, synopsis, nsfw, authors, created_at, updated_at, media_type, status, related_anime, related_manga, volumes, chapters, season) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
+                        cursor.execute(query, (id, title, cover, alternative_titles, start_date, end_date, synopsis, nsfw, authors, created_at, updated_at, media_type, status, related_anime, related_manga, volumes, chapters, season,))
+        
+                        # add genres to junction table
+                        genres = [genre['name'] for genre in i.get('genres', [])]
+                        for genre in genres:
+                            query = f'SELECT id FROM {ENTITY.GENRE} WHERE name = %s'
+                            cursor.execute(query, (genre,))
+                            genre_id = cursor.fetchone()
+
+                            if genre_id is not None:
+                                query = f'INSERT INTO {entity}_{ENTITY.GENRE} ({entity}_id, {ENTITY.GENRE}_id) VALUES(%s, %s);'
+                                cursor.execute(query, (id, genre_id,))
+        elif entity == ENTITY.STATISTICS:
+            with psycopg2.connect(**DB_CONFIG) as db:
+                db.autocommit = True
+                with db.cursor() as cursor:
+                    query = f'''
+CREATE TABLE IF NOT EXISTS {ENTITY.ANIME}_{entity} (
+    {ENTITY.ANIME}_id int not null,
+    {entity}_id int not null,
+    primary key ({entity}_id, {ENTITY.ANIME}_id),
+    foreign key ({ENTITY.ANIME}_id) references {ENTITY.ANIME}(id) on delete cascade,
+    foreign key ({entity}_id) references {entity}(id) on delete cascade
+);'''
+                    cursor.execute(query) # anime_statistics table
+
+                    query = f'''
+CREATE TABLE IF NOT EXISTS {ENTITY.MANGA}_{entity} (
+    {ENTITY.MANGA}_id int not null,
+    {entity}_id int not null,
+    primary key ({entity}_id, {ENTITY.MANGA}_id),
+    foreign key ({ENTITY.MANGA}_id) references {ENTITY.MANGA}(id) on delete cascade,
+    foreign key ({entity}_id) references {entity}(id) on delete cascade
+);'''
+                    cursor.execute(query) # manga_statistics table
+
+            query = f'INSERT INTO {entity}(mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, dropped, plan_to_watch) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;'
+            with psycopg2.connect(**DB_CONFIG) as db:
+                db.autocommit = True
+                with db.cursor() as cursor:
+                    for entry in animes:
+                        id = entry.get('id')
+                        mean = entry.get('mean')
+                        rank = entry.get('rank')
+                        popularity = entry.get('popularity')
+                        users_listed = entry.get('num_list_users')
+                        users_scored = entry.get('num_scoring_users')
+                        watching = entry.get('statistics', None).get('status').get('watching')
+                        completed = entry.get('statistics', None).get('status').get('completed')
+                        on_hold = entry.get('statistics', None).get('status').get('on_hold')
+                        dropped = entry.get('statistics', None).get('status').get('dropped')
+                        plan_to_watch = entry.get('statistics', None).get('status').get('plan_to_watch')
+                        cursor.execute(query, (mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, dropped, plan_to_watch,))
+                        statistics_id = cursor.fetchone()[0]
+                        as_query = f'INSERT INTO {ENTITY.ANIME}_{entity}({ENTITY.ANIME}_id, {entity}_id) VALUES(%s, %s);'
+                        cursor.execute(as_query, (id, statistics_id,))
+                    for entry in mangas:
+                        id = entry.get('id')
+                        mean = entry.get('mean')
+                        rank = entry.get('rank')
+                        popularity = entry.get('popularity')
+                        users_listed = entry.get('num_list_users')
+                        users_scored = entry.get('num_scoring_users')
+                        watching = None
+                        completed = None
+                        on_hold = None
+                        dropped = None
+                        plan_to_watch = None
+                        cursor.execute(query, (mean, rank, popularity, users_listed, users_scored, watching, completed, on_hold, dropped, plan_to_watch,))
+                        statistics_id = cursor.fetchone()[0]
+                        ms_query = f'INSERT INTO {ENTITY.MANGA}_{entity}({ENTITY.MANGA}_id, {entity}_id) VALUES(%s, %s);'
+                        cursor.execute(ms_query, (id, statistics_id,))
         else:
             print(f'Entity not supported: {entity}')
 
@@ -383,19 +457,12 @@ def prep():
         create_entities(entity)
 
 def create_entities(entity):
-    query = None
-    if entity == ENTITY.ENDPOINT:
-        query = f'''
-CREATE TYPE {entity} AS ENUM(
-    'anime',
-    'manga'
-);'''      
-    elif entity == ENTITY.GENRE:
+    query = None    
+    if entity == ENTITY.GENRE:
         query = f'''
 CREATE TABLE IF NOT EXISTS {entity}(
-    id int,
-    name text,
-    endpoint endpoint
+    id int primary key not null,
+    name text
 );'''
     elif entity == ENTITY.MEDIA_TYPE:
         pass
@@ -431,8 +498,7 @@ CREATE TABLE IF NOT EXISTS {entity}(
     elif entity == ENTITY.STATISTICS:
         query = f'''
 CREATE TABLE IF NOT EXISTS {entity}(
-    id int not null,
-    endpoint endpoint,
+    id serial primary key not null,
     mean decimal,
     rank int,
     popularity int,
@@ -441,6 +507,7 @@ CREATE TABLE IF NOT EXISTS {entity}(
     watching int,
     completed int,
     on_hold int,
+    dropped int,
     plan_to_watch int
 );'''
     elif entity == ENTITY.ANIME:
@@ -459,10 +526,10 @@ CREATE TABLE IF NOT EXISTS {entity}(
 
 def drop_entities(entity):
     query = None
-    if entity == ENTITY.ENDPOINT:
-        query = f'DROP TYPE IF EXISTS {entity} CASCADE;'
-    elif entity == ENTITY.GENRE:
-        query = f'DROP TABLE IF EXISTS {entity};'
+    if entity == ENTITY.GENRE:
+        query = f'DROP TABLE IF EXISTS {entity} CASCADE;'
+        query += f'DROP TABLE IF EXISTS anime_{entity} CASCADE;'
+        query += f'DROP TABLE IF EXISTS manga_{entity} CASCADE;'
     elif entity == ENTITY.MEDIA_TYPE:
         query = f'DROP TYPE IF EXISTS {entity} CASCADE;'
     elif entity == ENTITY.NSFW:
@@ -476,13 +543,16 @@ def drop_entities(entity):
     elif entity == ENTITY.SEASON:
         query = f'DROP TYPE IF EXISTS {entity} CASCADE;'
     elif entity == ENTITY.STUDIO:
-        query = f'DROP TABLE IF EXISTS {entity};'
+        query = f'DROP TABLE IF EXISTS {entity} CASCADE;'
+        query += f'DROP TABLE IF EXISTS anime_{entity} CASCADE;'
     elif entity == ENTITY.STATISTICS:
-        query = f'DROP TABLE IF EXISTS {entity};'
+        query = f'DROP TABLE IF EXISTS {entity} CASCADE;'
+        query += f'DROP TABLE IF EXISTS anime_{entity} CASCADE;'
+        query += f'DROP TABLE IF EXISTS manga_{entity} CASCADE;'
     elif entity == ENTITY.ANIME:
-        query = f'DROP TABLE IF EXISTS {entity};'
+        query = f'DROP TABLE IF EXISTS {entity} CASCADE;'
     elif entity == ENTITY.MANGA:
-        query = f'DROP TABLE IF EXISTS {entity};'
+        query = f'DROP TABLE IF EXISTS {entity} CASCADE;'
     else:
         print(f'Entity not supported: {entity}')
 

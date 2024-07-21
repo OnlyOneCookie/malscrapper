@@ -19,7 +19,8 @@ DB_LIST_ANIME = 'db_anime.json'
 DB_LIST_MANGA = 'db_manga.json'
 REQUEST_START_N = None
 REQUEST_LIMIT_N = 70000
-SAVE_PROGRESS_N = 1
+SAVE_PROGRESS_N = 5
+FOLDER = '../data'
 
 def get_data(id):
     if SELECTED_ENDPOINT == ENDPOINT_ANIME:
@@ -57,13 +58,13 @@ def get_data(id):
     return None
 
 def load_list(filename):
-    if os.path.exists(filename):
-        with open(filename, 'r', encoding='utf-8') as f:
+    if os.path.exists(f'{FOLDER}/{filename}'):
+        with open(f'{FOLDER}/{filename}', 'r', encoding='utf-8') as f:
             return json.load(f)
     return []
 
 def save_list(entries, filename):
-    with open(filename, 'w', encoding='utf-8') as f:
+    with open(f'{FOLDER}/{filename}', 'w', encoding='utf-8') as f:
         json.dump(entries, f, ensure_ascii=False, indent=4)
 
 def get_last_id(entries):
